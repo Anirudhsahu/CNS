@@ -1,0 +1,400 @@
+import java.util.Scanner;
+
+public class CaesarCipher
+{
+	public static void main(String[] args)
+	{
+		Scanner sc=new Scanner(System.in);
+		System.out.print("Enter Message : ");
+		String msg=sc.nextLine();
+		System.out.print("Enter Shift value(1-26) : ");
+		int shift=sc.nextInt()%26;
+		StringBuilder EM=new StringBuilder();
+		
+		for(char c: msg.toCharArray())
+		{
+			if(c>='a' && c<='z')
+			{
+				EM.append((char)('a'+(c-'a'+shift)%26));
+			}
+			else if(c>='A' && c<='Z')
+			{
+				EM.append((char)('A'+(c-'A'+shift)%26));
+			}
+			else
+			{
+				EM.append(c);
+			}
+		}
+		System.out.print("Encrypted Message : "+EM);
+		sc.close();
+	}
+}
+
+/*
+	Enter Message : HELLO WORLD
+	Enter Shift value(1-26) : 3
+	Encrypted Message : KHOOR ZRUOG
+ */
+
+
+
+
+import java.util.Scanner;
+
+public class SubstitutionCipher
+{
+    public static void main(String[] args)
+    {
+        Scanner sc = new Scanner(System.in);
+        System.out.print("Enter message to Encrypt : ");
+        String ms = sc.nextLine();
+        System.out.print("Enter the cipher key (26 letters): ");
+        String key = sc.nextLine();
+        String encoded = encode(ms, key);
+        System.out.println("Encrypted Message: " + encoded);
+        sc.close();
+    }
+    
+    public static String encode(String ms, String key)
+    {
+        ms = ms.toLowerCase();
+        key = key.toLowerCase();
+        StringBuilder encoded = new StringBuilder();
+
+        for (int i = 0; i < ms.length(); i++)
+        {
+            char c = ms.charAt(i);
+            if (c >= 'a' && c <= 'z')
+            {
+                int j = c - 'a';
+                char e = key.charAt(j);
+                encoded.append(e);
+            }
+            else
+            {
+                encoded.append(c);
+            }
+        }
+        return encoded.toString();
+    }
+}
+
+/*
+ 	Enter message to Encrypt : HELLO WORLD
+	Enter the cipher key (26 letters): qwertyuiopasdfghjklzxcvbnm
+	Encrypted Message: itssg vgksr
+ */
+
+
+
+
+import java.util.Scanner;
+
+public class HillCipher
+{
+    public static void main(String[] args)
+    {
+        Scanner sc = new Scanner(System.in);
+        System.out.print("Enter the 2x2 key matrix : ");
+        int[][] key = new int[2][2];
+        for (int i = 0; i < 2; i++)
+        {
+            for (int j = 0; j < 2; j++)
+            {
+                key[i][j] = sc.nextInt();
+            }
+        }
+        sc.nextLine();
+        System.out.print("Enter the message to encrypt : ");
+        String message = sc.nextLine();
+        message = message.toUpperCase();
+        message = message.replaceAll("[^A-Z]", "");
+        int numBlocks = message.length() / 2;
+        int[][] blocks = new int[numBlocks][2];
+        for (int i = 0; i < numBlocks; i++)
+        {
+            char c1 = message.charAt(i * 2);
+            char c2 = message.charAt(i * 2 + 1);
+            blocks[i][0] = c1 - 'A';
+            blocks[i][1] = c2 - 'A';
+        }
+        int[][] encryptedBlocks = new int[numBlocks][2];
+        for (int i = 0; i < numBlocks; i++)
+        {
+            for (int j = 0; j < 2; j++)
+            {
+                for (int k = 0; k < 2; k++)
+                {
+                    encryptedBlocks[i][j] += key[j][k] * blocks[i][k];
+                }
+                encryptedBlocks[i][j] %= 26;
+            }
+        }
+        String encryptedMessage = "";
+        for (int i = 0; i < numBlocks; i++)
+        {
+            encryptedMessage += (char) (encryptedBlocks[i][0] + 'A');
+            encryptedMessage += (char) (encryptedBlocks[i][1] + 'A');
+        }
+        System.out.println("Encrypted message :  " + encryptedMessage);
+        sc.close();
+    }
+}
+
+/*
+	Enter the 2x2 key matrix : 3 3 2 5
+	Enter the message to encrypt : TEXT
+	Encrypted message : RGWL
+*/
+
+
+
+
+
+import java.io.*;
+import java.security.*;
+import java.util.*;
+import javax.crypto.*;
+import javax.crypto.spec.*;
+
+
+public class Des {
+
+	public static void main(String[] args) throws Exception {
+		Scanner sc = new Scanner(System.in);
+		String pt,keyt;
+		pt = sc.nextLine();
+		keyt = sc.nextLine();
+		
+		byte[] key = keyt.getBytes();
+		SecretKeyFactory kf = SecretKeyFactory.getInstance("DES");
+		DESKeySpec dkey = new DESKeySpec(key);
+		SecretKey sk = kf.generateSecret(dkey);
+		
+		Cipher cp = Cipher.getInstance("DES");
+		cp.init(Cipher.ENCRYPT_MODE, sk);
+		byte[] ct = cp.doFinal(pt.getBytes());
+		String cts = Base64.getEncoder().encodeToString(ct);
+		System.out.println(cts);
+		
+		cp.init(Cipher.DECRYPT_MODE, sk);
+		byte[] org = cp.doFinal(ct);
+		System.out.println(new String(org));
+		
+	}
+
+}
+
+
+
+
+
+// Java Program to Implement the RSA Algorithm
+import java.math.*;
+import java.util.*;
+
+class RSA {
+	public static void main(String args[])
+	{
+		int p, q, n, z, d = 0, e, i;
+		int msg = 12;
+		double c;
+		BigInteger msgback;
+		p = 3;
+		q = 11;
+		n = p * q;
+		z = (p - 1) * (q - 1);
+		System.out.println("the value of z = " + z);
+
+		for (e = 2; e < z; e++) {
+			if (gcd(e, z) == 1) {
+				break;
+			}
+		}
+		System.out.println("the value of e = " + e);
+		for (i = 0; i <= 9; i++) {
+			int x = 1 + (i * z);
+			if (x % e == 0) {
+				d = x / e;
+				break;
+			}
+		}
+		System.out.println("the value of d = " + d);
+		c = (Math.pow(msg, e)) % n;
+		System.out.println("Encrypted message is : " + c);
+
+		BigInteger N = BigInteger.valueOf(n);
+		BigInteger C = BigDecimal.valueOf(c).toBigInteger();
+		msgback = (C.pow(d)).mod(N);
+		System.out.println("Decrypted message is : "
+						+ msgback);
+	}
+
+	static int gcd(int e, int z)
+	{
+		if (e == 0)
+			return z;
+		else
+			return gcd(z % e, e);
+	}
+}
+
+
+
+
+
+import java.util.Scanner;
+import java.math.BigInteger;
+
+public class DiffieHellman
+{
+    public static void main(String[] args)
+    {
+        Scanner sc = new Scanner(System.in);
+        System.out.print("Enter a value for G:");
+        BigInteger G = sc.nextBigInteger();
+        System.out.print("Enter a value for P:");
+        BigInteger P = sc.nextBigInteger();
+
+        System.out.print("User1 chooses a private key:");
+        BigInteger a = sc.nextBigInteger();
+        System.out.print("User2 chooses a private key:");
+        BigInteger b = sc.nextBigInteger();
+
+        BigInteger A = G.modPow(a, P);
+        BigInteger B = G.modPow(b, P);
+
+        BigInteger s1 = B.modPow(a, P);
+        BigInteger s2 = A.modPow(b, P);
+
+        if(s1.equals(s2))
+        {
+            System.out.println("Private keys match. Key exchange successful.");
+            System.out.println("Final shared secret key: " + s1);
+        }
+        else
+        {
+            System.out.println("Private keys do not match. Key exchange failed.");
+        }
+        sc.close();
+    }
+}
+
+/*
+	Enter a value for G:3
+	Enter a value for P:25
+	User1 chooses a private key:2
+	User2 chooses a private key:3
+	Private keys match. Key exchange successful.
+	Final shared secret key: 4
+*/
+
+
+
+
+
+import java.math.BigInteger;
+import java.util.*;
+import javax.crypto.Mac;
+import javax.crypto.spec.*;
+
+public class Hmac {
+	
+	public static byte[] hashmac(String pt,String key) throws Exception {
+		SecretKeySpec sk = new SecretKeySpec(key.getBytes(),"HmacSHA256");
+		Mac mac = Mac.getInstance("HmacSHA256");
+		mac.init(sk);
+		return mac.doFinal(pt.getBytes());
+	}
+
+	public static void main(String[] args) throws Exception {
+		Scanner sc = new Scanner(System.in);
+		String msg = sc.nextLine();
+		String key = sc.nextLine();
+		byte[] hmac = hashmac(msg,key);
+		System.out.println(String.format("Hex: %064x", new BigInteger(1, hmac)));
+	}	
+}
+
+
+
+
+
+
+
+import java.math.BigInteger;
+import java.security.NoSuchAlgorithmException;
+import java.security.MessageDigest;
+import java.util.Scanner;
+
+public class MD5{
+	public static String getMD5(String input){
+		try{
+			MessageDigest md=MessageDigest.getInstance("MD5"); 
+			byte[] messageDigest=md.digest(input.getBytes());
+			BigInteger no=new BigInteger(1,messageDigest);
+			String hasht=no.toString(16);
+			while(hasht.length()<32){
+				hasht="o"+hasht;
+			}
+			return hasht;
+		}
+		catch(NoSuchAlgorithmException e){
+			throw new RuntimeException (e);
+		}
+	}
+	public static void main(String args[])throws NoSuchAlgorithmException{ 
+		Scanner sc=new Scanner(System.in);
+		String s=sc.nextLine();
+		System.out.println("Your hashcode generated by MD5 is"+getMD5(s));
+	}
+}
+
+
+
+
+
+
+
+sudo apt-get install nmap
+ifconfig
+nmap –script vuln -sV {IP}
+
+
+
+
+
+sudo apt-get install gnupg
+sudo apt autoremove
+gpg –gen -key 
+//enter name,email
+gpg –output revoke.asc –gen-revoke name
+gedit abc.txt //enter text
+gpg –output doc.gpg –encrypt –recipient email abc.txt
+gedit doc.gpg
+gedit tt.txt
+gpg –output tt.txt –decrypt doc.gpg
+ls tt.txt
+gedit tt.txt
+gpg –output doc.sig –sign tt.txt
+gedit doc.sig
+
+
+
+
+
+
+cd  ~/Desktop
+gedit secret.txt 
+sudo apt-get install steghide
+steghide embed -cf pic.jpeg -ef secret.txt  
+steghide extract -sf pic.jpeg
+
+
+
+
+
+sudo add-apt-repository ppa:wireshark-dev/stable
+sudo apt install wireshark
+sudo wireshark
